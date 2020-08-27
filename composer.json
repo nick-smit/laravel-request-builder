@@ -1,0 +1,45 @@
+{
+    "name": "nick-smit/laravel-request-builder",
+    "description": "",
+    "version": "0.1.0",
+    "type": "library",
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "authors": [
+        {
+            "name": "Nick Smit",
+            "email": "nicksmit1994@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.3.0",
+        "illuminate/console": "^6.0|^7.0",
+        "illuminate/support": "^6.0|^7.0",
+        "nikic/php-parser": "^4.9",
+        "symfony/finder": "^5.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "NickSmit\\LaravelRequestBuilder\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "NickSmit\\LaravelRequestBuilder\\": "tests/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "NickSmit\\LaravelRequestBuilder\\ServiceProvider\\LaravelRequestBuilderServiceProvider"
+            ]
+        }
+    }
+}
