@@ -8,6 +8,7 @@ use Iterator;
 use NickSmit\LaravelRequestBuilder\Builder\Request;
 use NickSmit\LaravelRequestBuilder\Generator\RequestGenerator;
 use RuntimeException;
+use SplFileInfo;
 use Symfony\Component\Finder\Finder;
 
 /**
@@ -56,7 +57,7 @@ class GenerateRequests extends Command
      */
     protected function getRequests(string $fromPath, bool $recursive = true): Iterator
     {
-        /** @var \SplFileInfo $spl */
+        /** @var SplFileInfo $spl */
         foreach (Finder::create()->depth(0)->ignoreDotFiles(true)->in($fromPath) as $spl) {
             if ($spl->isDir() && $recursive) {
                 yield from $this->getRequests($spl->getPathname(), true);

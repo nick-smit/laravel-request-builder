@@ -5,6 +5,8 @@ namespace NickSmit\LaravelRequestBuilder\ServiceProvider;
 
 use Illuminate\Support\ServiceProvider;
 use NickSmit\LaravelRequestBuilder\Commands\GenerateRequests;
+use NickSmit\LaravelRequestBuilder\Writer\FileWriter;
+use NickSmit\LaravelRequestBuilder\Writer\RequestWriter;
 
 /**
  * Class LaravelRequestBuilderServiceProvider
@@ -19,6 +21,8 @@ class LaravelRequestBuilderServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/laravel-request-builder.php', 'laravel-request-builder');
+
+        app()->bind(RequestWriter::class, FileWriter::class);
     }
 
     /**

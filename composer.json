@@ -17,6 +17,7 @@
         "illuminate/console": "^6.0|^7.0",
         "illuminate/support": "^6.0|^7.0",
         "nikic/php-parser": "^4.9",
+        "spatie/phpunit-snapshot-assertions": "^4.2",
         "symfony/finder": "^5.2"
     },
     "require-dev": {
