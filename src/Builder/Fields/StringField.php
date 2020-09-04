@@ -115,7 +115,7 @@ final class StringField implements FieldInterface
 
     public function email(array $args = ['filter']): self
     {
-        $this->rules[] = $this->ruleWithParameters('email', $args);
+        $this->rules[] = $this->ruleWithParameters('email', ...$args);
 
         return $this;
     }
