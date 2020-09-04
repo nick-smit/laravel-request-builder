@@ -182,4 +182,32 @@ final class StringField implements FieldInterface
 
         return $this;
     }
+
+    public function letters(): self
+    {
+        $this->rules[] = __FUNCTION__;
+
+        return $this;
+    }
+
+    public function numbers(): self
+    {
+        $this->rules[] = __FUNCTION__;
+
+        return $this;
+    }
+
+    public function caseDiff(): self
+    {
+        $this->rules[] = Str::snake(__FUNCTION__);
+
+        return $this;
+    }
+
+    public function symbols(): self
+    {
+        $this->rules[] = __FUNCTION__;
+
+        return $this;
+    }
 }
