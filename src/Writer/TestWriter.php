@@ -3,7 +3,6 @@ declare(strict_types = 1);
 
 namespace NickSmit\LaravelRequestBuilder\Writer;
 
-use Illuminate\Contracts\Config\Repository;
 use PhpParser\Builder\Class_;
 use PhpParser\BuilderFactory;
 use PhpParser\PrettyPrinter\Standard as PrettyPrinter;
@@ -27,9 +26,8 @@ final class TestWriter implements RequestWriter
     private $handle;
 
     /**
-     * FileWriter constructor.
+     * TestWriter constructor.
      *
-     * @param Repository     $config
      * @param PrettyPrinter  $printer
      * @param BuilderFactory $builderFactory
      */

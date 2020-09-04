@@ -79,7 +79,7 @@ class GenerateRequests extends Command
      *
      * @return Request
      */
-    protected function loadRequest(string $pathname)
+    protected function loadRequest(string $pathname): Request
     {
         $request = require $pathname;
 
