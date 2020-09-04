@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace NickSmit\LaravelRequestBuilder\Builder;
 
+use NickSmit\LaravelRequestBuilder\Builder\Fields\BooleanField;
 use NickSmit\LaravelRequestBuilder\Builder\Fields\IntegerField;
 use NickSmit\LaravelRequestBuilder\Builder\Fields\StringField;
 use RuntimeException;
@@ -65,6 +66,16 @@ class Request
     public function string(string $name): StringField
     {
         return $this->addField(new StringField($name));
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return BooleanField|FieldInterface
+     */
+    public function boolean(string $name): BooleanField
+    {
+        return $this->addField(new BooleanField($name));
     }
 
     public function addField(FieldInterface $field): FieldInterface
