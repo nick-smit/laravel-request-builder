@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace NickSmit\LaravelRequestBuilder\Builder;
 
 use NickSmit\LaravelRequestBuilder\Builder\Fields\IntegerField;
+use NickSmit\LaravelRequestBuilder\Builder\Fields\StringField;
 use RuntimeException;
 
 /**
@@ -54,6 +55,16 @@ class Request
     public function integer(string $name): IntegerField
     {
         return $this->addField(new IntegerField($name));
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return StringField|FieldInterface
+     */
+    public function string(string $name): StringField
+    {
+        return $this->addField(new StringField($name));
     }
 
     public function addField(FieldInterface $field): FieldInterface
