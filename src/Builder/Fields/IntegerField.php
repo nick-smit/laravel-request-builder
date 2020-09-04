@@ -20,7 +20,7 @@ class IntegerField implements FieldInterface
     /**
      * @var array
      */
-    private $rules = [];
+    private $rules = ['integer'];
 
     /**
      * Integer constructor.
@@ -39,7 +39,7 @@ class IntegerField implements FieldInterface
 
     public function getRules(): array
     {
-        return array_merge(['integer'], $this->rules);
+        return $this->rules;
     }
 
     public function digits(int $digits): self
