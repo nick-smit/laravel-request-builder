@@ -68,4 +68,11 @@ final class RequestGenerator
 
         $this->requestWriter->write($class);
     }
+
+    public function setWriter(RequestWriter $requestWriter): self
+    {
+        $this->requestWriter = $requestWriter;
+
+        return $this;
+    }
 }

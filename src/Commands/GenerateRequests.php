@@ -7,6 +7,7 @@ use Illuminate\Console\Command;
 use Iterator;
 use NickSmit\LaravelRequestBuilder\Builder\Request;
 use NickSmit\LaravelRequestBuilder\Generator\RequestGenerator;
+use NickSmit\LaravelRequestBuilder\Writer\ConsoleWriter;
 use RuntimeException;
 use SplFileInfo;
 use Symfony\Component\Finder\Finder;
@@ -21,7 +22,7 @@ class GenerateRequests extends Command
      *
      * @var string
      */
-    protected $signature = 'request-builder:generate';
+    protected $signature = 'request-builder:generate {--write-to-console}';
     /**
      * The console command description.
      *
@@ -38,6 +39,10 @@ class GenerateRequests extends Command
      */
     public function handle(RequestGenerator $generator): int
     {
+        if ($this->option('write-to-console')) {
+            $generator->setWriter(app()->make(ConsoleWriter::class));
+        }
+
         $path = config('laravel-request-builder.request-input-directory');
 
         foreach ($this->getRequests($path) as $request) {
@@ -72,7 +77,7 @@ class GenerateRequests extends Command
     /**
      * @param string $pathname
      *
-     * @return mixed|Request
+     * @return Request
      */
     protected function loadRequest(string $pathname)
     {
