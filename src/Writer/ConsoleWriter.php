@@ -37,7 +37,7 @@ final class ConsoleWriter implements RequestWriter
     {
         echo $this->printer->prettyPrint(
             [
-                $this->builderFactory->namespace('Tests\\Http\\Requests')
+                $this->builderFactory->namespace(app()->getNamespace() . 'Http\\Requests')
                     ->addStmt($class)
                     ->getNode(),
             ]
