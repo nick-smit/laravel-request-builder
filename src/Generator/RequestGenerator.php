@@ -9,10 +9,18 @@ use NickSmit\LaravelRequestBuilder\Builder\Request;
 use NickSmit\LaravelRequestBuilder\Writer\RequestWriter;
 use PhpParser\Builder\Class_;
 use PhpParser\Builder\Method;
+use PhpParser\Builder\Property;
 use PhpParser\BuilderFactory;
+use PhpParser\Node\Arg;
+use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Param;
+use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Return_;
 
 /**
@@ -45,7 +53,20 @@ final class RequestGenerator
 
     public function generate(Request $request): void
     {
-        $class = new Class_(ucfirst(Str::camel($request->getName())));
+        $this->writeRequestClass($request);
+        $this->writeRequestDataClass($request);
+    }
+
+    public function setWriter(RequestWriter $requestWriter): self
+    {
+        $this->requestWriter = $requestWriter;
+
+        return $this;
+    }
+
+    protected function writeRequestClass(Request $request): void
+    {
+        $class = new Class_($this->getRequestClassName($request));
         $class->extend(new FullyQualified(FormRequest::class));
 
         $authorizeMethod = new Method('authorize');
@@ -69,10 +90,60 @@ final class RequestGenerator
         $this->requestWriter->write($class);
     }
 
-    public function setWriter(RequestWriter $requestWriter): self
+    protected function writeRequestDataClass(Request $request): void
     {
-        $this->requestWriter = $requestWriter;
+        $class = new Class_($this->getRequestClassName($request) . 'Data');
 
-        return $this;
+        $requestClass = new FullyQualified(
+            app()->getNamespace() . 'Http\\Requests\\' . $this->getRequestClassName($request)
+        );
+
+        $requestProp = new Property('request');
+        $requestProp->makePrivate();
+        if (PHP_MAJOR_VERSION > 7 || PHP_MAJOR_VERSION === 7 && PHP_MINOR_VERSION >= 4) {
+            $requestProp->setType($requestClass);
+        }
+        $class->addStmt($requestProp);
+
+        $constructor = new Method('__construct');
+        $constructor->makePublic();
+        $requestVar = new Variable('request');
+        $constructor->addParam(new Param($requestVar, null, $requestClass));
+        $constructor->addStmt(new Assign(new PropertyFetch(new Variable('this'), 'request'), $requestVar));
+        $class->addStmt($constructor);
+
+        $getRequestMethod = new Method('getRequest');
+        $getRequestMethod->makePublic();
+        $getRequestMethod->addStmt(new Return_(new PropertyFetch(new Variable('this'), 'request')));
+        $getRequestMethod->setReturnType($requestClass);
+        $class->addStmt($getRequestMethod);
+
+        // write getters for every field
+        foreach ($request->getFields() as $field) {
+            $getter = new Method('get' . ucfirst(Str::camel($field->getName())));
+            $getter->makePublic();
+
+            $returnStmt = new Return_(
+                new MethodCall(
+                    new PropertyFetch(new Variable('this'), 'request'),
+                    'post',
+                    [new Arg(new String_($field->getName()))]
+                )
+            );
+            $getter->addStmt($returnStmt);
+            $class->addStmt($getter);
+        }
+
+        $this->requestWriter->write($class);
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return string
+     */
+    protected function getRequestClassName(Request $request): string
+    {
+        return ucfirst(Str::camel($request->getName()));
     }
 }
