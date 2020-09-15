@@ -10,6 +10,11 @@ namespace NickSmit\LaravelRequestBuilder\Builder;
  */
 trait WithRules
 {
+    public function isRequired(): bool
+    {
+        return in_array('required', $this->rules, true);
+    }
+
     public function required(): self
     {
         $this->rules[] = __FUNCTION__;

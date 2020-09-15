@@ -19,6 +19,7 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Return_;
@@ -123,11 +124,20 @@ final class RequestGenerator
             $getter = new Method('get' . ucfirst(Str::camel($field->getName())));
             $getter->makePublic();
 
+            $returnType = $field->getReturnType();
+            if (!$field->isRequired()) {
+                $returnType = new NullableType($returnType);
+            }
+
+            $getter->setReturnType($returnType);
+
             $returnStmt = new Return_(
-                new MethodCall(
-                    new PropertyFetch(new Variable('this'), 'request'),
-                    'post',
-                    [new Arg(new String_($field->getName()))]
+                $field->getCast(
+                    new MethodCall(
+                        new PropertyFetch(new Variable('this'), 'request'),
+                        $field->getType()->requestGetter(),
+                        [new Arg(new String_($field->getName()))]
+                    )
                 )
             );
             $getter->addStmt($returnStmt);

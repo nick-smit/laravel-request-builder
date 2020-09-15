@@ -6,13 +6,15 @@ namespace NickSmit\LaravelRequestBuilder\Builder\Fields;
 use Illuminate\Support\Str;
 use NickSmit\LaravelRequestBuilder\Builder\FieldInterface;
 use NickSmit\LaravelRequestBuilder\Builder\WithRules;
+use NickSmit\LaravelRequestBuilder\Builder\WithType;
+use PhpParser\Node\Expr;
 
 /**
  * Class StringField
  */
 final class StringField implements FieldInterface
 {
-    use WithRules;
+    use WithRules, WithType;
 
     /**
      * @var string
@@ -41,6 +43,16 @@ final class StringField implements FieldInterface
     public function getRules(): array
     {
         return $this->rules;
+    }
+
+    public function getReturnType(): string
+    {
+        return 'string';
+    }
+
+    public function getCast(Expr\MethodCall $expr): Expr
+    {
+        return new Expr\Cast\String_($expr);
     }
 
     public function min(int $min): self

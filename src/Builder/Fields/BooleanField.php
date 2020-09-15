@@ -5,13 +5,15 @@ namespace NickSmit\LaravelRequestBuilder\Builder\Fields;
 
 use NickSmit\LaravelRequestBuilder\Builder\FieldInterface;
 use NickSmit\LaravelRequestBuilder\Builder\WithRules;
+use NickSmit\LaravelRequestBuilder\Builder\WithType;
+use PhpParser\Node\Expr;
 
 /**
  * Class BoolField
  */
 final class BooleanField implements FieldInterface
 {
-    use WithRules;
+    use WithRules, WithType;
 
     /**
      * @var string
@@ -40,6 +42,16 @@ final class BooleanField implements FieldInterface
     public function getRules(): array
     {
         return $this->rules;
+    }
+
+    public function getReturnType(): string
+    {
+        return 'bool';
+    }
+
+    public function getCast(Expr\MethodCall $expr): Expr
+    {
+        return new Expr\Cast\Bool_($expr);
     }
 
     public function accepted(): self
